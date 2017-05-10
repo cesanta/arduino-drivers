@@ -31,6 +31,7 @@ TwoWire::~TwoWire() {
 
 void TwoWire::begin(void) {
   if (i2c == NULL) i2c = mgos_i2c_get_global();
+  if (i2c == NULL) return;
 
   mgos_i2c_stop(i2c);
 
