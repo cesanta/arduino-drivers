@@ -7,15 +7,17 @@
 
 #include "Wire.h"
 
-#if MGOS_ENABLE_WIRE
+#if MGOS_ENABLE_I2C
+
+TwoWire Wire;
 
 TwoWire::TwoWire()
-    : i2c(NULL),
+    : i2c(nullptr),
       addr(0),
       n_bytes_avail(0),
       n_bytes_to_send(0),
-      pbyte_to_recv(NULL),
-      pbyte_to_send(NULL) {
+      pbyte_to_recv(nullptr),
+      pbyte_to_send(nullptr) {
   recv_buf = new uint8_t[BUF_SIZE];
   send_buf = new uint8_t[BUF_SIZE];
   on_receive_cb = NULL;
@@ -31,9 +33,6 @@ void TwoWire::begin(void) {
   if (i2c == NULL) i2c = mgos_i2c_get_global();
 
   mgos_i2c_stop(i2c);
-
-  pinMode(i2c->sda_gpio, INPUT_PULLUP);
-  pinMode(i2c->scl_gpio, INPUT_PULLUP);
 
   pbyte_to_recv = recv_buf;
   pbyte_to_send = send_buf;
@@ -175,4 +174,4 @@ void TwoWire::onRequest(void (*function)(void)) {
   on_request_cb = function;
 }
 
-#endif /* MGOS_ENABLE_WIRE */
+#endif /* MGOS_ENABLE_I2C */

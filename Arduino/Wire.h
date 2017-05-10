@@ -7,28 +7,9 @@
 #include "Arduino.h"
 #include "fw/src/mgos_i2c.h"
 
-#if MGOS_ENABLE_WIRE
-
-struct mgos_i2c {
-  int sda_gpio;
-  int scl_gpio;
-  bool started;
-};
+#if MGOS_ENABLE_I2C
 
 class TwoWire {
- private:
-  enum { BUF_SIZE = 32 };
-
-  struct mgos_i2c *i2c;
-  uint8_t addr, n_bytes_avail, n_bytes_to_send;
-  uint8_t *pbyte_to_recv, *recv_buf;
-  uint8_t *pbyte_to_send, *send_buf;
-
-  void (*on_request_cb)(void);
-  void (*on_receive_cb)(int);
-  void onRequestService(void);
-  void onReceiveService(uint8_t *, int);
-
  public:
   TwoWire();
   ~TwoWire();
@@ -67,8 +48,23 @@ class TwoWire {
   size_t write(int n) {
     return write((uint8_t) n);
   }
+
+ private:
+  enum { BUF_SIZE = 32 };
+
+  struct mgos_i2c *i2c;
+  uint8_t addr, n_bytes_avail, n_bytes_to_send;
+  uint8_t *pbyte_to_recv, *recv_buf;
+  uint8_t *pbyte_to_send, *send_buf;
+
+  void (*on_request_cb)(void);
+  void (*on_receive_cb)(int);
+  void onRequestService(void);
+  void onReceiveService(uint8_t *, int);
 };
 
-#endif /* MGOS_ENABLE_WIRE */
+extern TwoWire Wire;
+
+#endif /* MGOS_ENABLE_I2C */
 
 #endif /* CS_FW_SRC_ARDUINO_WIRE_H_ */
