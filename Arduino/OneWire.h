@@ -4,9 +4,11 @@
 /* clang-format off */
 #include <stdint.h>
 #include "Arduino.h"
+#include "fw/src/mgos_onewire.h"
+
+#if MGOS_ENABLE_ARDUINO_API && MGOS_ENABLE_ONEWIRE
 
 class OneWire {
-  void *ow;  // The OneWire handle
  public:
   OneWire(uint8_t pin);
   ~OneWire();
@@ -67,6 +69,11 @@ class OneWire {
   // Compute a Dallas Semiconductor 8 bit CRC, these are used in the
   // ROM and scratchpad registers.
   static uint8_t crc8(const uint8_t *addr, uint8_t len);
+  
+ private:
+  struct mgos_onewire *ow_;  // The mgos_onewire handle
 };
+
+#endif /* MGOS_ENABLE_ARDUINO_API && MGOS_ENABLE_ONEWIRE */
 
 #endif /* CS_FW_SRC_ARDUINO_ONEWIRE_H_ */
