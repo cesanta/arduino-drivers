@@ -53,6 +53,9 @@ void SPIImpl::beginTransaction(SPISettings settings) {
   setDataMode(settings.mode);
 }
 
+void SPIImpl::endTransaction() {
+}
+
 uint8_t SPIImpl::transfer(uint8_t data) {
   if (spi_ == nullptr) return 0;
   if (!mgos_spi_txn(spi_, &data, &data, 1)) data = 0;

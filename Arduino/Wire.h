@@ -50,12 +50,12 @@ class TwoWire {
   }
 
  private:
-  enum { BUF_SIZE = 32 };
+  enum {BUF_SIZE = 32};
 
   struct mgos_i2c *i2c;
   uint8_t addr, n_bytes_avail, n_bytes_to_send;
-  uint8_t *pbyte_to_recv, *recv_buf;
-  uint8_t *pbyte_to_send, *send_buf;
+  uint8_t recv_buf[BUF_SIZE], send_buf[BUF_SIZE];
+  uint8_t *pbyte_to_recv, *pbyte_to_send;
 
   void (*on_request_cb)(void);
   void (*on_receive_cb)(int);

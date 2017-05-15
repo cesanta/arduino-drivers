@@ -18,20 +18,16 @@ TwoWire::TwoWire()
       n_bytes_to_send(0),
       pbyte_to_recv(nullptr),
       pbyte_to_send(nullptr) {
-  recv_buf = new uint8_t[BUF_SIZE];
-  send_buf = new uint8_t[BUF_SIZE];
-  on_receive_cb = NULL;
-  on_request_cb = NULL;
+  on_receive_cb = nullptr;
+  on_request_cb = nullptr;
 }
 
 TwoWire::~TwoWire() {
-  delete[] recv_buf;
-  delete[] send_buf;
 }
 
 void TwoWire::begin(void) {
-  if (i2c == NULL) i2c = mgos_i2c_get_global();
-  if (i2c == NULL) return;
+  if (i2c == nullptr) i2c = mgos_i2c_get_global();
+  if (i2c == nullptr) return;
 
   mgos_i2c_stop(i2c);
 
@@ -50,10 +46,10 @@ void TwoWire::begin(int address) {
 }
 
 void TwoWire::end(void) {
-  if (i2c == NULL) return;
+  if (i2c == nullptr) return;
   mgos_i2c_stop(i2c);
   mgos_i2c_close(i2c);
-  i2c = NULL;
+  i2c = nullptr;
 }
 
 void TwoWire::setClock(uint32_t clock) {
@@ -66,7 +62,7 @@ uint8_t TwoWire::requestFrom(uint8_t address, uint8_t quantity,
   (void) iaddress;
   (void) isize;
 
-  if (i2c == NULL) return 0;
+  if (i2c == nullptr) return 0;
   if (quantity > BUF_SIZE) quantity = BUF_SIZE;
 
   bool res = mgos_i2c_read(i2c, address, recv_buf, quantity, sendStop);
@@ -105,7 +101,7 @@ void TwoWire::beginTransmission(int address) {
 }
 
 uint8_t TwoWire::endTransmission(uint8_t sendStop) {
-  if (i2c == NULL) return 4;
+  if (i2c == nullptr) return 4;
 
   bool res = mgos_i2c_write(i2c, addr, send_buf, n_bytes_to_send, sendStop);
 
@@ -147,7 +143,7 @@ void TwoWire::flush(void) {
 }
 
 void TwoWire::onReceiveService(uint8_t *inBytes, int numBytes) {
-  if (on_receive_cb == NULL) return;
+  if (on_receive_cb == nullptr) return;
   if (pbyte_to_recv < recv_buf + n_bytes_avail) return;
 
   for (int i = 0; i < numBytes; i++) recv_buf[i] = inBytes[i];
@@ -159,7 +155,7 @@ void TwoWire::onReceiveService(uint8_t *inBytes, int numBytes) {
 }
 
 void TwoWire::onRequestService(void) {
-  if (on_request_cb == NULL) return;
+  if (on_request_cb == nullptr) return;
 
   pbyte_to_send = send_buf;
   n_bytes_to_send = 0;
