@@ -479,9 +479,7 @@ void Adafruit_SSD1306::display(void) {
     digitalWrite(cs, LOW);
 #endif
 
-    for (uint16_t i=0; i<(WIDTH*HEIGHT/8); i++) {
-      fastSPIwrite(buffer[i]);
-    }
+    fastSPIwrite(buffer, WIDTH*HEIGHT/8);
 #ifdef HAVE_PORTREG
     *csport |= cspinmask;
 #else
@@ -540,6 +538,16 @@ inline void Adafruit_SSD1306::fastSPIwrite(uint8_t d) {
       else        digitalWrite(sid, LOW);
       digitalWrite(sclk, HIGH);
 #endif
+    }
+  }
+}
+
+void Adafruit_SSD1306::fastSPIwrite(const uint8_t *bytes, size_t len) {
+  if (hwSPI) {
+    SPI.writeBytes(bytes, len);
+  } else {
+    while (len-- > 0) {
+      fastSPIwrite(*bytes++);
     }
   }
 }

@@ -61,7 +61,7 @@ class SPIImpl {
   // void write(uint8_t data);
   void write16(uint16_t data);
   void write32(uint32_t data);
-  void writeBytes(uint8_t *data, uint32_t size);
+  void writeBytes(const uint8_t *data, uint32_t size);
 
   /* mOS stuff. */
   SPIImpl(struct mgos_spi *spi = nullptr);

@@ -167,6 +167,7 @@ class Adafruit_SSD1306 : public Adafruit_GFX {
 
  private:
   void fastSPIwrite(uint8_t c);
+  void fastSPIwrite(const uint8_t *bytes, size_t len);
   static int getW(Resolution res);
   static int getH(Resolution res);
 

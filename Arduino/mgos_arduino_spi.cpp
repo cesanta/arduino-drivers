@@ -107,6 +107,10 @@ void SPIImpl::write32(uint32_t data) {
   mgos_spi_txn_hd(spi_, &data, 4, NULL, 0);
 }
 
+void SPIImpl::writeBytes(const uint8_t *data, uint32_t size) {
+  mgos_spi_txn_hd(spi_, data, size, NULL, 0);
+}
+
 void SPIImpl::setSPI(struct mgos_spi *spi) {
   spi_ = spi;
 }
