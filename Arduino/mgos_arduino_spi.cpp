@@ -88,27 +88,26 @@ void SPIImpl::transferBytes(const uint8_t *data, uint8_t *out, uint32_t size) {
   mgos_spi_txn(spi_, data, out, size);
 }
 
-/*
 void SPIImpl::write(uint8_t data) {
   if (spi_ == nullptr) return;
-  mgos_spi_txn(spi_, &data, 1, NULL, 0);
+  mgos_spi_txn_hd(spi_, &data, 1, nullptr, 0);
 }
-*/
 
 void SPIImpl::write16(uint16_t data) {
   if (spi_ == nullptr) return;
   data = htons(data);
-  mgos_spi_txn_hd(spi_, &data, 2, NULL, 0);
+  mgos_spi_txn_hd(spi_, &data, 2, nullptr, 0);
 }
 
 void SPIImpl::write32(uint32_t data) {
   if (spi_ == nullptr) return;
   data = htonl(data);
-  mgos_spi_txn_hd(spi_, &data, 4, NULL, 0);
+  mgos_spi_txn_hd(spi_, &data, 4, nullptr, 0);
 }
 
 void SPIImpl::writeBytes(const uint8_t *data, uint32_t size) {
-  mgos_spi_txn_hd(spi_, data, size, NULL, 0);
+  if (spi_ == nullptr) return;
+  mgos_spi_txn_hd(spi_, data, size, nullptr, 0);
 }
 
 void SPIImpl::setSPI(struct mgos_spi *spi) {

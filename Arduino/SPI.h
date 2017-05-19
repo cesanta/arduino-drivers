@@ -58,7 +58,7 @@ class SPIImpl {
   void transferBytes(const uint8_t *data, uint8_t *out, uint32_t size);
   // void transferBits(uint32_t data, uint32_t * out, uint8_t bits);
 
-  // void write(uint8_t data);
+  void write(uint8_t data);
   void write16(uint16_t data);
   void write32(uint32_t data);
   void writeBytes(const uint8_t *data, uint32_t size);
