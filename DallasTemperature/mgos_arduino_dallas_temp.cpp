@@ -9,7 +9,7 @@
 
 #if MGOS_ENABLE_ARDUINO_API && MGOS_ENABLE_ONEWIRE
 
-DallasTemperature *mgos_arduino_dt_init(OneWire *ow) {
+DallasTemperature *mgos_arduino_dt_create(OneWire *ow) {
   if (ow == nullptr) return nullptr;
   return new DallasTemperature(ow);
 }
@@ -26,69 +26,69 @@ void mgos_arduino_dt_begin(DallasTemperature *dt) {
   dt->begin();
 }
 
-uint8_t mgos_arduino_dt_get_device_count(DallasTemperature *dt) {
+int mgos_arduino_dt_get_device_count(DallasTemperature *dt) {
   if (dt == nullptr) return 0;
   return dt->getDeviceCount();
 }
 
-bool mgos_arduino_dt_valid_address(DallasTemperature *dt, const uint8_t *addr) {
+bool mgos_arduino_dt_valid_address(DallasTemperature *dt, const char *addr) {
   if (dt == nullptr) return false;
-  return dt->validAddress(addr);
+  return dt->validAddress((uint8_t *)addr);
 }
 
-bool mgos_arduino_dt_valid_family(DallasTemperature *dt, const uint8_t* addr) {
+bool mgos_arduino_dt_valid_family(DallasTemperature *dt, const char* addr) {
   if (dt == nullptr) return false;
-  return dt->validFamily(addr);
+  return dt->validFamily((uint8_t *)addr);
 }
 
-bool mgos_arduino_dt_get_address(DallasTemperature *dt, uint8_t *addr, uint8_t idx) {
+bool mgos_arduino_dt_get_address(DallasTemperature *dt, char *addr, int idx) {
   if (dt == nullptr) return false;
-  return dt->getAddress(addr, idx);
+  return dt->getAddress((uint8_t *)addr, idx);
 }
 
-bool mgos_arduino_dt_is_connected(DallasTemperature *dt, const uint8_t *addr) {
+bool mgos_arduino_dt_is_connected(DallasTemperature *dt, const char *addr) {
   if (dt == nullptr) return false;
-  return dt->isConnected(addr);
+  return dt->isConnected((uint8_t *)addr);
 }
 
-bool mgos_arduino_dt_is_connected_sp(DallasTemperature *dt, const uint8_t *addr, uint8_t *sp) {
+bool mgos_arduino_dt_is_connected_sp(DallasTemperature *dt, const char *addr, char *sp) {
   if (dt == nullptr) return false;
-  return dt->isConnected(addr, sp);
+  return dt->isConnected((uint8_t *)addr, (uint8_t *)sp);
 }
 
-bool mgos_arduino_dt_read_scratch_pad(DallasTemperature *dt, const uint8_t *addr, uint8_t *sp) {
+bool mgos_arduino_dt_read_scratch_pad(DallasTemperature *dt, const char *addr, char *sp) {
   if (dt == nullptr) return false;
-  return dt->readScratchPad(addr, sp);
+  return dt->readScratchPad((uint8_t *)addr, (uint8_t *)sp);
 }
 
-void mgos_arduino_dt_write_scratch_pad(DallasTemperature *dt, const uint8_t *addr, const uint8_t *sp) {
+void mgos_arduino_dt_write_scratch_pad(DallasTemperature *dt, const char *addr, const char *sp) {
   if (dt == nullptr) return;
-  dt->writeScratchPad(addr, sp);
+  dt->writeScratchPad((uint8_t *)addr, (uint8_t *)sp);
 }
 
-bool mgos_arduino_dt_read_power_supply(DallasTemperature *dt, const uint8_t *addr) {
+bool mgos_arduino_dt_read_power_supply(DallasTemperature *dt, const char *addr) {
   if (dt == nullptr) return false;
-  return dt->readPowerSupply(addr);
+  return dt->readPowerSupply((uint8_t *)addr);
 }
 
-uint8_t mgos_arduino_dt_get_global_resolution(DallasTemperature *dt) {
+int mgos_arduino_dt_get_global_resolution(DallasTemperature *dt) {
   if (dt == nullptr) return 0;
   return dt->getResolution();
 }
 
-void mgos_arduino_dt_set_global_resolution(DallasTemperature *dt, uint8_t res) {
+void mgos_arduino_dt_set_global_resolution(DallasTemperature *dt, int res) {
   if (dt == nullptr) return;
   dt->setResolution(res);
 }
 
-uint8_t mgos_arduino_dt_get_resolution(DallasTemperature *dt, const uint8_t *addr) {
+int mgos_arduino_dt_get_resolution(DallasTemperature *dt, const char *addr) {
   if (dt == nullptr) return 0;
-  return dt->getResolution(addr);
+  return dt->getResolution((uint8_t *)addr);
 }
 
-bool mgos_arduino_dt_set_resolution(DallasTemperature *dt, const uint8_t *addr, uint8_t res, bool skip_global_calc) {
+bool mgos_arduino_dt_set_resolution(DallasTemperature *dt, const char *addr, int res, bool skip_global_calc) {
   if (dt == nullptr) return false;
-  return dt->setResolution(addr, res, skip_global_calc);
+  return dt->setResolution((uint8_t *)addr, res, skip_global_calc);
 }
 
 void mgos_arduino_dt_set_wait_for_conversion(DallasTemperature *dt, bool f) {
@@ -116,37 +116,37 @@ void mgos_arduino_dt_request_temperatures(DallasTemperature *dt) {
   dt->requestTemperatures();
 }
 
-bool mgos_arduino_dt_request_temperatures_by_address(DallasTemperature *dt, const uint8_t *addr) {
+bool mgos_arduino_dt_request_temperatures_by_address(DallasTemperature *dt, const char *addr) {
   if (dt == nullptr) return false;
-  return dt->requestTemperaturesByAddress(addr);
+  return dt->requestTemperaturesByAddress((uint8_t *)addr);
 }
 
-bool mgos_arduino_dt_request_temperatures_by_index(DallasTemperature *dt, uint8_t idx) {
+bool mgos_arduino_dt_request_temperatures_by_index(DallasTemperature *dt, int idx) {
   if (dt == nullptr) return false;
   return dt->requestTemperaturesByIndex(idx);
 }
 
-int16_t mgos_arduino_dt_get_temp(DallasTemperature *dt, const uint8_t *addr) {
+int16_t mgos_arduino_dt_get_temp(DallasTemperature *dt, const char *addr) {
   if (dt == nullptr) return DEVICE_DISCONNECTED_RAW;
-  return dt->getTemp(addr);
+  return dt->getTemp((uint8_t *)addr);
 }
 
-int mgos_arduino_dt_get_tempc(DallasTemperature *dt, const uint8_t *addr) {
+int mgos_arduino_dt_get_tempc(DallasTemperature *dt, const char *addr) {
   if (dt == nullptr) return DEVICE_DISCONNECTED_C;
-  return round(dt->getTempC(addr) * 100.0);
+  return round(dt->getTempC((uint8_t *)addr) * 100.0);
 }
 
-int mgos_arduino_dt_get_tempf(DallasTemperature *dt, const uint8_t *addr) {
+int mgos_arduino_dt_get_tempf(DallasTemperature *dt, const char *addr) {
   if (dt == nullptr) return DEVICE_DISCONNECTED_F;
-  return round(dt->getTempF(addr) * 100.0);
+  return round(dt->getTempF((uint8_t *)addr) * 100.0);
 }
 
-int mgos_arduino_dt_get_tempc_by_index(DallasTemperature *dt, uint8_t idx) {
+int mgos_arduino_dt_get_tempc_by_index(DallasTemperature *dt, int idx) {
   if (dt == nullptr) return DEVICE_DISCONNECTED_C;
   return round(dt->getTempCByIndex(idx) * 100.0);
 }
 
-int mgos_arduino_dt_get_tempf_by_index(DallasTemperature *dt, uint8_t idx) {
+int mgos_arduino_dt_get_tempf_by_index(DallasTemperature *dt, int idx) {
   if (dt == nullptr) return DEVICE_DISCONNECTED_F;
   return round(dt->getTempFByIndex(idx) * 100.0);
 }
@@ -161,29 +161,29 @@ bool mgos_arduino_dt_is_conversion_complete(DallasTemperature *dt) {
   return dt->isConversionComplete();
 }
 
-int16_t mgos_arduino_dt_millis_to_wait_for_conversion(DallasTemperature *dt, uint8_t res) {
+int16_t mgos_arduino_dt_millis_to_wait_for_conversion(DallasTemperature *dt, int res) {
   if (dt == nullptr) return 0;
   return dt->millisToWaitForConversion(res);
 }
 
-void mgos_arduino_dt_set_high_alarm_temp(DallasTemperature *dt, const uint8_t *addr, char gradc) {
+void mgos_arduino_dt_set_high_alarm_temp(DallasTemperature *dt, const char *addr, char gradc) {
   if (dt == nullptr) return;
-  dt->setHighAlarmTemp(addr, gradc);
+  dt->setHighAlarmTemp((uint8_t *)addr, gradc);
 }
 
-void mgos_arduino_dt_set_low_alarm_temp(DallasTemperature *dt, const uint8_t *addr, char gradc) {
+void mgos_arduino_dt_set_low_alarm_temp(DallasTemperature *dt, const char *addr, char gradc) {
   if (dt == nullptr) return;
-  dt->setLowAlarmTemp(addr, gradc);
+  dt->setLowAlarmTemp((uint8_t *)addr, gradc);
 }
 
-char mgos_arduino_dt_get_high_alarm_temp(DallasTemperature *dt, const uint8_t *addr) {
+char mgos_arduino_dt_get_high_alarm_temp(DallasTemperature *dt, const char *addr) {
   if (dt == nullptr) return DEVICE_DISCONNECTED_C;
-  return dt->getHighAlarmTemp(addr);
+  return dt->getHighAlarmTemp((uint8_t *)addr);
 }
 
-char mgos_arduino_dt_get_low_alarm_temp(DallasTemperature *dt, const uint8_t *addr) {
+char mgos_arduino_dt_get_low_alarm_temp(DallasTemperature *dt, const char *addr) {
   if (dt == nullptr) return DEVICE_DISCONNECTED_C;
-  return dt->getLowAlarmTemp(addr);
+  return dt->getLowAlarmTemp((uint8_t *)addr);
 }
 
 void mgos_arduino_dt_reset_alarm_search(DallasTemperature *dt) {
@@ -191,14 +191,14 @@ void mgos_arduino_dt_reset_alarm_search(DallasTemperature *dt) {
   dt->resetAlarmSearch();
 }
 
-bool mgos_arduino_dt_alarm_search(DallasTemperature *dt, uint8_t *new_addr) {
+bool mgos_arduino_dt_alarm_search(DallasTemperature *dt, char *new_addr) {
   if (dt == nullptr) return false;
-  return dt->alarmSearch(new_addr);
+  return dt->alarmSearch((uint8_t *)new_addr);
 }
 
-bool mgos_arduino_dt_has_alarm(DallasTemperature *dt, const uint8_t *addr) {
+bool mgos_arduino_dt_has_alarm(DallasTemperature *dt, const char *addr) {
   if (dt == nullptr) return false;
-  return dt->hasAlarm(addr);
+  return dt->hasAlarm((uint8_t *)addr);
 }
 
 bool mgos_arduino_dt_has_alarms(DallasTemperature *dt) {
