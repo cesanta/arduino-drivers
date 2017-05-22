@@ -8,7 +8,7 @@
 #include <math.h>
 #include "mgos_arduino_bme280.h"
 
-Adafruit_BME280 *mgos_bme280_init() {
+Adafruit_BME280 *mgos_bme280_create() {
   return new Adafruit_BME280();
 }
 
@@ -19,7 +19,7 @@ void mgos_bme280_close(Adafruit_BME280 *bme) {
   }
 }
 
-int mgos_bme280_begin(Adafruit_BME280 *bme, uint8_t addr) {
+int mgos_bme280_begin(Adafruit_BME280 *bme, int addr) {
   if (bme == nullptr) return 0;
   return bme->begin(addr);
 }

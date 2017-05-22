@@ -16,7 +16,7 @@ extern "C"
 
 // Initialize Adafruit_BME280 library.
 // Return value: OneWire handle opaque pointer.
-Adafruit_BME280 *mgos_bme280_init();
+Adafruit_BME280 *mgos_bme280_create();
 
 // Close Adafruit_BME280 handle. Return value: none.
 void mgos_bme280_close(Adafruit_BME280 *bme);
@@ -25,7 +25,7 @@ void mgos_bme280_close(Adafruit_BME280 *bme);
 // Returns 0 if the sensor not plugged or a checking failed,
 // i.e. the chip ID is incorrect.
 // Returns 1 otherwise.
-int mgos_bme280_begin(Adafruit_BME280 *bme, uint8_t addr);
+int mgos_bme280_begin(Adafruit_BME280 *bme, int addr);
 
 // Take a new measurement (only possible in forced mode).
 void mgos_bme280_take_forced_measurement(Adafruit_BME280 *bme);
