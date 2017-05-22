@@ -12,7 +12,7 @@ extern "C"
 {
 #endif
 
-DHT *mgos_dht_init(uint8_t pin, uint8_t type);
+DHT *mgos_dht_create(int pin, int type);
 void mgos_dht_close(DHT *dht);
 void mgos_dht_begin(DHT *dht);
 int mgos_dht_read_temperature(DHT *dht, int s, int f);

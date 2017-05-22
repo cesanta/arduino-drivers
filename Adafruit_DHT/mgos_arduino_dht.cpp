@@ -10,7 +10,7 @@
 
 #define MGOS_DHT_RES_FAIL -12700
 
-DHT *mgos_dht_init(uint8_t pin, uint8_t type) {
+DHT *mgos_dht_create(int pin, int type) {
   return new DHT(pin, type, 0);
 }
 
