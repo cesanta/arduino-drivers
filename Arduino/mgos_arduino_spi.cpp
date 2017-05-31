@@ -9,8 +9,6 @@
 
 #include "mongoose/mongoose.h"
 
-#include "fw/src/mgos_spi.h"
-
 #if MGOS_ENABLE_SPI
 
 SPIImpl SPI;
@@ -23,6 +21,8 @@ SPISettings::SPISettings(uint32_t clock, uint8_t bitOrder, uint8_t mode)
 }
 
 SPIImpl::SPIImpl(struct mgos_spi *spi) : spi_(spi) {
+  memset(&txn_, 0, sizeof(txn_));
+  txn_.cs = -1; /* CS control is performed externally */
 }
 
 void SPIImpl::begin() {
@@ -32,22 +32,18 @@ void SPIImpl::end() {
 }
 
 void SPIImpl::setBitOrder(uint8_t bitOrder) {
-  if (spi_ == nullptr) return;
-  mgos_spi_set_msb_first(spi_, (bitOrder == MSBFIRST));
+  (void) bitOrder;
 }
 
 void SPIImpl::setDataMode(uint8_t dataMode) {
-  if (spi_ == nullptr) return;
-  mgos_spi_set_mode(spi_, dataMode);
+  txn_.mode = dataMode;
 }
 
 void SPIImpl::setFrequency(uint32_t freq) {
-  if (spi_ == nullptr) return;
-  mgos_spi_set_freq(spi_, freq);
+  txn_.freq = freq;
 }
 
 void SPIImpl::beginTransaction(SPISettings settings) {
-  if (spi_ == nullptr) return;
   setFrequency(settings.clock);
   setBitOrder(settings.bit_order);
   setDataMode(settings.mode);
@@ -57,57 +53,85 @@ void SPIImpl::endTransaction() {
 }
 
 uint8_t SPIImpl::transfer(uint8_t data) {
+  struct mgos_spi_txn txn = txn_;
   if (spi_ == nullptr) return 0;
-  if (!mgos_spi_txn(spi_, &data, &data, 1)) data = 0;
+  txn.fd.tx_data = txn.fd.rx_data = &data;
+  txn.fd.len = sizeof(data);
+  if (!mgos_spi_run_txn(spi_, true /* full_duplex */, &txn)) data = 0;
   return data;
 }
 
 uint16_t SPIImpl::transfer16(uint16_t data) {
+  struct mgos_spi_txn txn = txn_;
   if (spi_ == nullptr) return 0;
   data = htons(data);
-  if (!mgos_spi_txn(spi_, &data, &data, 2)) data = 0;
+  txn.fd.tx_data = txn.fd.rx_data = &data;
+  txn.fd.len = sizeof(data);
+  if (!mgos_spi_run_txn(spi_, true /* full_duplex */, &txn)) data = 0;
   data = ntohs(data);
   return data;
 }
 
 uint32_t SPIImpl::transfer32(uint32_t data) {
+  struct mgos_spi_txn txn = txn_;
   if (spi_ == nullptr) return 0;
   data = htonl(data);
-  if (!mgos_spi_txn(spi_, &data, &data, 4)) data = 0;
+  txn.fd.tx_data = txn.fd.rx_data = &data;
+  txn.fd.len = sizeof(data);
+  if (!mgos_spi_run_txn(spi_, true /* full_duplex */, &txn)) data = 0;
   data = ntohl(data);
   return data;
 }
 
 void SPIImpl::transfer(void *data, size_t count) {
+  struct mgos_spi_txn txn = txn_;
   if (spi_ == nullptr) return;
-  mgos_spi_txn(spi_, data, data, count);
+  txn.fd.tx_data = txn.fd.rx_data = data;
+  txn.fd.len = count;
+  mgos_spi_run_txn(spi_, true /* full_duplex */, &txn);
 }
 
 void SPIImpl::transferBytes(const uint8_t *data, uint8_t *out, uint32_t size) {
+  struct mgos_spi_txn txn = txn_;
   if (spi_ == nullptr) return;
-  mgos_spi_txn(spi_, data, out, size);
+  txn.fd.tx_data = data;
+  txn.fd.rx_data = out;
+  txn.fd.len = size;
+  mgos_spi_run_txn(spi_, true /* full_duplex */, &txn);
 }
 
 void SPIImpl::write(uint8_t data) {
+  struct mgos_spi_txn txn = txn_;
   if (spi_ == nullptr) return;
-  mgos_spi_txn_hd(spi_, &data, 1, nullptr, 0);
+  txn.hd.tx_data = &data;
+  txn.hd.tx_len = sizeof(data);
+  mgos_spi_run_txn(spi_, false /* full_duplex */, &txn);
 }
 
 void SPIImpl::write16(uint16_t data) {
+  struct mgos_spi_txn txn = txn_;
   if (spi_ == nullptr) return;
   data = htons(data);
-  mgos_spi_txn_hd(spi_, &data, 2, nullptr, 0);
+  txn.hd.tx_data = &data;
+  txn.hd.tx_len = sizeof(data);
+  mgos_spi_run_txn(spi_, false /* full_duplex */, &txn);
 }
 
 void SPIImpl::write32(uint32_t data) {
+  struct mgos_spi_txn txn = txn_;
   if (spi_ == nullptr) return;
   data = htonl(data);
-  mgos_spi_txn_hd(spi_, &data, 4, nullptr, 0);
+  txn.hd.tx_data = &data;
+  txn.hd.tx_len = sizeof(data);
+  mgos_spi_run_txn(spi_, false /* full_duplex */, &txn);
 }
 
 void SPIImpl::writeBytes(const uint8_t *data, uint32_t size) {
+  struct mgos_spi_txn txn = txn_;
   if (spi_ == nullptr) return;
-  mgos_spi_txn_hd(spi_, data, size, nullptr, 0);
+  txn.hd.tx_data = data;
+  txn.hd.tx_len = size;
+  mgos_spi_run_txn(spi_, false /* full_duplex */, &txn);
 }
 
 void SPIImpl::setSPI(struct mgos_spi *spi) {

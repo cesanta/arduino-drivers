@@ -14,6 +14,8 @@
 
 #include <Arduino.h>
 
+#include "fw/src/mgos_spi.h"
+
 #ifndef LSBFIRST
 #define LSBFIRST 0
 #endif
@@ -69,6 +71,7 @@ class SPIImpl {
 
  private:
   struct mgos_spi *spi_;
+  struct mgos_spi_txn txn_;
 };
 
 extern SPIImpl SPI;
